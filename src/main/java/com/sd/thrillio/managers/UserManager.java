@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import com.sd.thrillio.daos.UserDao;
 import com.sd.thrillio.entities.User;
+import com.sd.thrillio.util.StringUtil;
 
 //singletone design pattern is used.
 //1) single object is created
@@ -37,6 +38,18 @@ public class UserManager {
 
 	public User getUser(long userId) {
 		return dao.getUser(userId);
+	}
+
+	public long authenticate(String email, String password) {
+		String encryptedPassword = StringUtil.encodePassword(password);
+		return dao.authenticate(email, encryptedPassword);
+	}
+
+    public int saveNewUser(User user) {
+    	String encryptedPassword = StringUtil.encodePassword(user.getPassword());
+    	user.setPassword(encryptedPassword);
+		return dao.saveNewUser(user);
+		
 	}
    
 }

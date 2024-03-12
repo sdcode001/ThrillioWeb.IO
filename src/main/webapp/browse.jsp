@@ -15,7 +15,8 @@
 		
 		<div style="height:25px;background: #DB5227;font-family: Arial;color: white;">
 			<b>
-			<a href="<%=request.getContextPath()%>/bookmark/mybooks" style="font-size:16px;color:white;margin-left:1150px;text-decoration:none;">My Books</a>			
+			<a href="<%=request.getContextPath()%>/bookmark/mybooks" style="font-size:16px;color:white;margin-left:1000px;text-decoration:none;">My Books</a>	
+			<a href="<%=request.getContextPath()%>/auth/logout" style="font-size:16px;color:white;margin-left:10px;text-decoration:none;">LogOut</a>		
 			</b>
 		</div>
 				
@@ -39,7 +40,7 @@
 						 <br><br>
 						 Rating: <span style="color: #B13100;">${book.getAmazonRating()}</span>
 						 <br><br>
-						 Publication Year: <span style="color: #B13100;">${book.getPublisher()}</span>
+						 Publication Year: <span style="color: #B13100;">${book.getPublicationYear()}</span>
 						 <br><br>
 						 Genre: <span style="color: #B13100;">${book.getGenre()}</span>
 						 <br><br>

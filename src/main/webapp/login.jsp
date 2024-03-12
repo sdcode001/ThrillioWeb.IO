@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -9,7 +8,14 @@
 <body>
 	<div style="height:65px;align: center;background: #DB5227;font-family: Arial;color: white;"">
 		<br><b>
-		<a href="" style="font-family:garamond;font-size:34px;margin:0 0 0 10px;color:white;text-decoration: none;">Thrill.IO</a></b>          
+		<a href="" style="font-family:garamond;font-size:34px;margin:0 0 0 10px;color:white;text-decoration: none;">Thrill.IO</a></b>  
+		
+		<div style="height:25px;background: #DB5227;font-family: Arial;color: white;">
+			<b>
+			<a href="<%=request.getContextPath()%>/auth/signup" style="font-size:16px;color:white;margin-left:1150px;text-decoration:none;">SignUp</a>			
+			</b>
+		</div>
+		        
 	</div>
 	<br><br>
 	<form method="POST" action="<%=request.getContextPath()%>/auth">

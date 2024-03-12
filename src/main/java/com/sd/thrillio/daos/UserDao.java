@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import com.sd.thrillio.constants.UserType;
 import com.sd.thrillio.entities.User;
@@ -26,7 +28,7 @@ public class UserDao {
 			}
 			//try-with-resource => conn & stmt will be colsed
 			//Connection string => <protocol>:<sub-protocol>:<data-source-details>
-			try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?useSSL=false", "root", "DeY@733129");
+			try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
 				Statement stmt = conn.createStatement();){
 				
 				String query = "select * from User";
@@ -66,7 +68,7 @@ public class UserDao {
 		}
 		//try-with-resource => conn & stmt will be colsed
 		//Connection string => <protocol>:<sub-protocol>:<data-source-details>
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?useSSL=false", "root", "DeY@733129");
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
 			Statement stmt = conn.createStatement();){
 			
 			String query = "select * from User where id = "+userId;
@@ -92,6 +94,64 @@ public class UserDao {
 		}
 		
 		return user;
+	}
+
+
+	public long authenticate(String email, String encryptedPassword) {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			
+		}catch(ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		//try-with-resource => conn & stmt will be colsed
+		//Connection string => <protocol>:<sub-protocol>:<data-source-details>
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
+			Statement stmt = conn.createStatement();){
+			
+		    String query = "select id from User where email = '" + email + "' and password = '" + encryptedPassword + "'";
+		    
+            ResultSet rs = stmt.executeQuery(query);
+			
+	    	while (rs.next()) {
+	    		return rs.getLong("id");
+	    	}
+		
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}	
+			
+		return -1;
+	}
+
+
+	public int saveNewUser(User user) {
+		int user_type_id = Integer.parseInt(user.getUserType());
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			
+		}catch(ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		//try-with-resource => conn & stmt will be colsed
+		//Connection string => <protocol>:<sub-protocol>:<data-source-details>
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
+			Statement stmt = conn.createStatement();){
+			
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
+			String currentDateTime = format.format(new Date());
+			
+		    String query = "insert into User (email, password, first_name, last_name, gender_id, user_type_id, created_date) values"
+		    +" ('"+user.getEmail()+"', '"+user.getPassword()+"', '"+user.getFirstName()+"', '"+user.getLastName()+"', "+user.getGender()+", "+user_type_id+", '"+currentDateTime+"')";
+		    
+            return stmt.executeUpdate(query);
+		
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return -1;
 	}
 
 }

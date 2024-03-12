@@ -38,7 +38,7 @@ public class BookmarkDao {
 		}
 		//try-with-resource => conn & stmt will be colsed
 		//Connection string => <protocol>:<sub-protocol>:<data-source-details>
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?useSSL=false", "root", "DeY@733129");
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
 			Statement stmt = conn.createStatement();){
 			if(userbookmark.getBookmark() instanceof Book) {
 				saveUserBook(userbookmark, stmt);
@@ -107,7 +107,7 @@ public class BookmarkDao {
 			   table_to_upadte = "WebLink";
 		}
 		
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?useSSL=false", "root", "DeY@733129");
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
 				Statement stmt = conn.createStatement();){
 			    String query = "update "+ table_to_upadte + " set kid_friendly_status = "+ kidFriendlyStatus_id
 			    		       + ", kid_friendly_status_markedby = "+markedBy.getId()
@@ -129,7 +129,7 @@ public class BookmarkDao {
 		   table_to_upadte = "WebLink";
 		}
 		
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?useSSL=false", "root", "DeY@733129");
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
 				Statement stmt = conn.createStatement();){
 			    String query = "update "+ table_to_upadte + " set bookmark_shareby = "+ user_id
 			    		       + " where id = "+bookmark.getId();
@@ -152,7 +152,7 @@ public class BookmarkDao {
 			e.printStackTrace();
 		}
 		
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?useSSL=false", "root", "DeY@733129");
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
 				Statement stmt = conn.createStatement();){
 			String query = "";
 			if(!isBookmarked) {
@@ -207,7 +207,7 @@ public class BookmarkDao {
 			e.printStackTrace();
 		}
 		
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?useSSL=false", "root", "DeY@733129");
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
 				Statement stmt = conn.createStatement();){
 			
 			String query = "select b.id as id, title, image_url, p.name as publisher, group_concat(a.name separator ',') as authors, publication_year, book_genre_id, amazon_rating, kid_friendly_status, created_date" 
@@ -249,7 +249,7 @@ public class BookmarkDao {
 		}
 		//try-with-resource => conn & stmt will be colsed
 		//Connection string => <protocol>:<sub-protocol>:<data-source-details>
-		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?useSSL=false", "root", "DeY@733129");
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
 			Statement stmt = conn.createStatement();){
 			if(userbookmark.getBookmark() instanceof Book) {
 				deleteUserBook(userbookmark, stmt);
