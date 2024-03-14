@@ -1,64 +1,38 @@
 package com.sd.thrillio;
 
-import java.util.List;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import com.sd.thrillio.backgroundjobs.WebpageDownloaderTask;
-import com.sd.thrillio.entities.Bookmark;
-import com.sd.thrillio.entities.User;
-import com.sd.thrillio.managers.BookmarkManager;
-import com.sd.thrillio.managers.UserManager;
 
 
-public class Launch {
-	private static List<User> users;
-	private static List<List<Bookmark>> bookmarks;
+public class Launch implements ServletContextListener{
 	
-	private static void loadData() {
-		System.out.println("Loading data...");
-		DataStore.loadData();
-		//users = UserManager.getInstance().getUsers();
-		bookmarks = BookmarkManager.getInstance().getBookmarks();
-//		System.out.println("Printing Users...");
-//		printUsers();
-//		System.out.println("Printing Bookmarks...");
-//		printBookmarks();
+	private Thread dowloaderThread = null;
+	
+	public void contextInitialized(ServletContextEvent sce) {	
+	   //launch background jobs
+       dowloaderThread = runDownloaderJob();
+       
 	}
 	
-	private static void printBookmarks() {
-		for(List<Bookmark> bookmarkType:bookmarks) {
-			for(Bookmark bookmark:bookmarkType) {
-				System.out.println(bookmark.toString());
-			}
-		}
-	}
+	
+	 public void contextDestroyed(javax.servlet.ServletContextEvent sce) {
+		 //stopping the downloader thread so that Executer can be stopped.
+		 if(dowloaderThread!=null) {
+			 dowloaderThread.interrupt();
+		 }
+		 
+	 }
+	
 	
 
-	private static void printUsers() {
-		for(User user:users) {
-			System.out.println(user.toString());
-		}
-	}
 
-	private static void start() {
-		System.out.println("Starting application....");
-		for(User user:users) {
-			View.browse(user, bookmarks);	
-			System.out.println('\n');
-		}
-	}
-	
-	private static void runDownloaderJob() {
+	private static Thread runDownloaderJob() {
 		WebpageDownloaderTask task = new WebpageDownloaderTask(true);
-		
-		(new Thread(task)).start();
-	}
-	
-	
-	public static void main(String[] args) {	
-		loadData();
-		start();
-		////Background jobs
-		//runDownloaderJob();
+		Thread thread = new Thread(task);
+		thread.start();
+		return thread;
 	}
 	
 

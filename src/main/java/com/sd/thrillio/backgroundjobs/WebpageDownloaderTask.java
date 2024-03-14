@@ -3,6 +3,7 @@ package com.sd.thrillio.backgroundjobs;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -55,8 +56,8 @@ public class WebpageDownloaderTask implements Runnable{
 		}
 	}
 	
-	private List<WebLink> getWeblinks(){
-		List<WebLink> result = null;
+	private Collection<WebLink> getWeblinks(){
+		Collection<WebLink> result = null;
 		if(downloadAll) {
 			result = dao.getAllWebLinks();
 			downloadAll = false;
@@ -68,8 +69,8 @@ public class WebpageDownloaderTask implements Runnable{
 		return result;
 	}
 	
-	private List<Downloader<WebLink>> getDownloadTasks(List<WebLink> webLinks) {
-		List<Downloader<WebLink>> result = new ArrayList<>();
+	private Collection<Downloader<WebLink>> getDownloadTasks(Collection<WebLink> webLinks) {
+		Collection<Downloader<WebLink>> result = new ArrayList<>();
 		for(WebLink link:webLinks) {
 			result.add(new Downloader<WebLink>(link));
 		}
@@ -77,9 +78,9 @@ public class WebpageDownloaderTask implements Runnable{
 	}
 	
 	
-	private void download(List<WebLink> webLinks) {
-		List<Downloader<WebLink>> tasks = getDownloadTasks(webLinks);
-		List<Future<WebLink>> futures = new ArrayList<>();
+	private void download(Collection<WebLink> webLinks) {
+		Collection<Downloader<WebLink>> tasks = getDownloadTasks(webLinks);
+		Collection<Future<WebLink>> futures = new ArrayList<>();
 	    
 		try {
 			futures = downloadExecutor.invokeAll(tasks, TIME_FRAME, TimeUnit.NANOSECONDS);	
@@ -113,7 +114,7 @@ public class WebpageDownloaderTask implements Runnable{
 		
 		while(!Thread.currentThread().isInterrupted()) {
 			//get weblinks
-			List<WebLink> webLinks = getWeblinks();
+			Collection<WebLink> webLinks = getWeblinks();
 			
 			//download concurrently
 			if(webLinks.size()>0) {

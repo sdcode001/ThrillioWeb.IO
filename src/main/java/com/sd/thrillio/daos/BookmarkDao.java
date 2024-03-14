@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import com.sd.thrillio.DataStore;
 import com.sd.thrillio.constants.BookGenre;
 import com.sd.thrillio.constants.KidFriendlyStatus;
@@ -76,18 +75,48 @@ public class BookmarkDao {
 	}
 
 	//In real application we would have SQL or Hibernet queries.
-	public List<WebLink> getAllWebLinks() {
-		List<WebLink> result=new ArrayList<>();
-		List<List<Bookmark>> bookmarks = DataStore.getBookmarks();
-		for(Bookmark weblink: bookmarks.get(0)) {
-			result.add((WebLink)weblink);
+	public Collection<WebLink> getAllWebLinks() {
+		Collection<WebLink> list = new ArrayList<>();
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			
+		}catch(ClassNotFoundException e) {
+			e.printStackTrace();
 		}
-		return result;
+		
+		
+		//try-with-resource => conn & stmt will be colsed
+		//Connection string => <protocol>:<sub-protocol>:<data-source-details>
+		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
+			Statement stmt = conn.createStatement();){
+			
+			String query = "select * from WebLink";
+			
+			ResultSet rs = stmt.executeQuery(query);
+			
+	    	while (rs.next()) {
+	    		long id = rs.getLong("id");
+	    		String title = rs.getString("title");
+	    		String url = rs.getString("url");
+	    		String host = rs.getString("host");
+	    		int kid_friendly_status_id = rs.getInt("kid_friendly_status");
+	    		String kid_friendly_status = KidFriendlyStatus.values()[kid_friendly_status_id].getValue();
+	    		Timestamp created_date = rs.getTimestamp("created_date");
+	    		
+	    		list.add(BookmarkManager.getInstance().createWebLink(id, title, "", url, host, kid_friendly_status));
+	    	}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return list;
 	}
 	
-	public List<WebLink> getWebLinks(WebLink.DownloadStatus downloadStatus) {
-		List<WebLink> result=new ArrayList<>();
-		List<WebLink> allWeblinks = getAllWebLinks();
+	public Collection<WebLink> getWebLinks(WebLink.DownloadStatus downloadStatus) {
+		Collection<WebLink> result=new ArrayList<>();
+		Collection<WebLink> allWeblinks = getAllWebLinks();
 		for(WebLink weblink:allWeblinks) {
 			if(weblink.getDownloadStatus().equals(downloadStatus)) {
 				result.add(weblink);
@@ -105,6 +134,13 @@ public class BookmarkDao {
 		}
 		else if(bookmark instanceof WebLink) {
 			   table_to_upadte = "WebLink";
+		}
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			
+		}catch(ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 		
 		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
@@ -127,6 +163,13 @@ public class BookmarkDao {
 		String table_to_upadte = "Book";
 		if(bookmark instanceof WebLink) {
 		   table_to_upadte = "WebLink";
+		}
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			
+		}catch(ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 		
 		try(Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_thrillio?allowPublicKeyRetrieval=true&useSSL=false", "root", "DeY@733129");
